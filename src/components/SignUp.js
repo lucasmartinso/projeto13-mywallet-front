@@ -2,7 +2,8 @@ import styled from "styled-components";
 import axios from "axios"; 
 import { useState } from "react";  
 import { ThreeDots } from  'react-loader-spinner'; 
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
+import { Link } from "react-router-dom";
 
 export default function SignUp () { 
     const [clicked, setClicked] = useState(false); 
@@ -10,25 +11,47 @@ export default function SignUp () {
     const [email, setEmail] = useState(""); 
     const [password, setPassword] = useState("");  
     const [confirmPassword, setConfirmPassword] = useState(""); 
+
     const navigate = useNavigate(); 
+    
+    function sendInfo(event) { 
+        event.preventDefault(); 
+
+        setClicked(true); 
+        const info = {name,email, password, confirmPassword}; 
+        const promise = axios.post("http://localhost:4000/registration",info);
+
+        promise.then(response => { 
+            console.log(response.data); 
+            navigate("/")
+        }); 
+
+        promise.catch(error => {
+            console.log(error); 
+            alert("USUÁRIO INVÁLIDO OU EXISTENTE\n\nNome, email, senha ou confirmação de senha incorretos ou já existentes\n\nPREENCHA NOVAMENTE!!");
+            window.location.reload();
+        });
+    }
     
     return(
         <>
         <Title>MyWallet</Title> 
 
-        <form>
+        <form onSubmit={sendInfo}>
             <Data>
-            <input type="text" placeholder= "Nome" required/> 
-            <input type="email" placeholder= "Email" required/>
-            <input type="password" placeholder="Senha" required/> 
-            <input type="password" placeholder="Confirme a senha" required/> 
-            <button onClick={() => setClicked(true)}>
+            <input type="text" placeholder= "Nome" value={name} onChange={(event) => setName(event.target.value)} required/> 
+            <input type="email" placeholder= "Email" value={email} onChange={(event) => setEmail(event.target.value)} required/>
+            <input type="password" placeholder="Senha" value={password} onChange={(event) => setPassword(event.target.value)} required/> 
+            <input type="password" placeholder="Confirme a senha" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} required/> 
+            <button>
                 {clicked ? (
                     <ThreeDots color="white" height={80} width={80} /> 
                 ) : ("Entrar") }
             </button>
-            </Data> 
-        </form> 
+            </Data>  
+        </form>  
+
+        <Link to="/"><Message>Já tem uma conta? Entre agora!</Message></Link>
         </>
     )
 }
@@ -82,5 +105,19 @@ const Data = styled.div`
         &:hover { 
             cursor: pointer;
         }
+    }
+`
+const Message = styled.div`
+    display: flex; 
+    justify-content: center; 
+    color: rgba(255, 255, 255, 1);; 
+    font-size: 20px; 
+    font-weight: 700;  
+    margin-top: 32px; 
+    text-decoration: underline; 
+    text-decoration-color: #9153BD;
+
+    &:hover { 
+        cursor: pointer; 
     }
 `
