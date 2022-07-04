@@ -6,7 +6,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 
-export default function Login() { 
+export default function Login({setUserData}) { 
     const [clicked, setClicked] = useState(false); 
     const [email, setEmail] = useState(""); 
     const [password, setPassword] = useState(""); 
@@ -21,7 +21,7 @@ export default function Login() {
         const promise = axios.post("http://localhost:4000/login",info); 
 
         promise.then(response => { 
-            console.log(response.data.token); 
+            setUserData(response.data); 
             navigate("/main");
         }); 
 

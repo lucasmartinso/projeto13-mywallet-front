@@ -4,8 +4,34 @@ import { useState } from "react";
 import { ThreeDots } from  'react-loader-spinner'; 
 import { useNavigate } from "react-router-dom"; 
 
-export default function Revenue() {  
-    const [clicked, setClicked] = useState("");
+export default function Revenue({userData}) {  
+    const [clicked, setClicked] = useState(false); 
+    const [value, setValue] = useState();
+    const [description, setDescription] = useState("");
+    const navigate = useNavigate();
+
+    function sendInfo(event) { 
+        event.preventDefault(); 
+
+        setClicked(true);
+        const info = {value,description}; 
+        const config = {
+            headers: {Authorization: `Bearer ${userData.token}`}
+        };  
+        const promise = axios.post("http://localhost:4000/revenue",info,config); 
+
+        promise.then(response => { 
+            console.log(response.data); 
+            navigate("/main");
+        }); 
+
+        promise.catch(error => { 
+            console.log(error); 
+            alert("DADOS INVÁLIDOS OU INCORRETOS"); 
+            navigate("/");
+            window.location.reload();
+        });
+    }
 
     return(
         <Container>
@@ -13,11 +39,11 @@ export default function Revenue() {
                 <h3>Nova Entrada</h3>
             </Title> 
 
-            <form>
+            <form onSubmit={sendInfo}>
             <Data>
-            <input type="number" placeholder= "Valor" required/>
-            <input type="text" placeholder="Descrição" required/>  
-            <button onClick={() => setClicked(true)}>
+            <input type="number" placeholder= "Valor" value={value} onChange={(event) => setValue(event.target.value)} required/>
+            <input type="text" placeholder="Descrição" value={description} onChange={(event) => setDescription(event.target.value)} required/>  
+            <button>
                 {clicked ? (
                     <ThreeDots color="white" height={80} width={80} /> 
                 ) : ("Salvar entrada") }

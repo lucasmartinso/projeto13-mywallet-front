@@ -6,15 +6,16 @@ import Main from "./Main";
 import Revenue from "./ Revenue";
 import Outgoing from "./Outgoing";
 
-export default function App() { 
+export default function App() {  
+    const [userData, setUserData] = useState(""); 
     return( 
         <BrowserRouter>
             <Routes> 
-                <Route path="/" element={<Login />} /> 
+                <Route path="/" element={<Login setUserData={setUserData}/>} /> 
                 <Route path="/signUp" element={<SignUp />} />  
-                <Route path="/main" element={<Main />} /> 
-                <Route path="/revenue" element={<Revenue />} /> 
-                <Route path="/outgoing" element={<Outgoing />} /> 
+                <Route path="/main" element={<Main userData={userData}/>} /> 
+                <Route path="/revenue" element={<Revenue userData={userData}/>} /> 
+                <Route path="/outgoing" element={<Outgoing userData={userData}/>} /> 
             </Routes> 
         </BrowserRouter>
     )

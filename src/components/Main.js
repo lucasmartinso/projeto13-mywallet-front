@@ -1,26 +1,80 @@
 import styled from "styled-components"; 
 import axios from "axios"; 
-import { useState } from "react";  
+import { useState, useEffect } from "react";  
 import { useNavigate } from "react-router-dom";
+import RenderizeActions from "./RenderizeActions";
 
-export default function Main() { 
+export default function Main({userData}) {  
+    const [actions, setActions] = useState();
+    const [sum, setSum] = useState(0);
+    const navigate = useNavigate(); 
+    
+    useEffect(() => {
+        const config = { 
+            headers: {Authorization : `Bearer ${userData.token}`}
+        }; 
+        
+        const promise = axios.get("http://localhost:4000/records",config);
+
+        promise.then(response => { 
+            setActions(response.data);
+            sumAll();
+        });  
+
+        promise.catch(error => { 
+            console.log(error); 
+            alert("ERRO AO CARREGAR");
+            navigate("/");
+        });
+    }, []);  
+
+   function sumAll() { 
+        let soma = 0;
+        for(let i=0; i<actions.length; i++) { 
+            if(actions[i].type === "entrada") { 
+                soma = actions[i].value;
+            } else { 
+                soma -= actions[i].value;
+            }
+        } 
+        setSum(soma);
+   } 
+
+   console.log(sum);
+
     return( 
         <Container>
             <Header>
-                <h2>Olá, Fulano</h2> 
-                <ion-icon name="exit-outline"></ion-icon>
-            </Header> 
+                <h2>Olá, {userData.name}</h2> 
+                <ion-icon name="exit-outline" onClick={() => navigate("/")}></ion-icon>
+            </Header>  
 
-            <Records>
-                <h3>Não há registros de entrada ou saída</h3>
-            </Records>
+            {actions ? (
+                <Records> 
+                {actions.map(action => 
+                    <RenderizeActions 
+                        date = {action.date} 
+                        description = {action.description}
+                        value = {action.value}
+                        type = {action.type}
+                    />
+                )}
+                    <Total sum={sum}>
+                        <a>SALDO</a>
+                        <span>{sum}</span>
+                    </Total>
+                </Records> ) : (
+                <WhiteNote> 
+                    <h3>Não há registros de entrada ou saída</h3>
+                </WhiteNote> 
+            )}
 
             <OptionBoxes>
-                <button>
+                <button onClick={() => navigate("/revenue")}>
                     <ion-icon name="add-circle-outline"></ion-icon> 
                     <h4>Nova Entrada</h4>
                 </button> 
-                <button>
+                <button onClick={() => navigate("/outgoing")}>
                     <ion-icon name="remove-circle-outline"></ion-icon>
                     <h4>Nova Saída</h4>
                 </button>
@@ -60,7 +114,7 @@ const Header = styled.div`
     }
 
 `
-const Records = styled.div`
+const WhiteNote = styled.div`
     width: 326px; 
     height: 446px; 
     background-color: rgba(255, 255, 255, 1); 
@@ -81,6 +135,32 @@ const Records = styled.div`
         text-align: center;
     }
 ` 
+const Records = styled.ul`
+    width: 326px; 
+    height: 446px; 
+    background-color: rgba(255, 255, 255, 1); 
+    padding: 23px 11px 10px 12px;
+    margin-bottom: 13px; 
+    display: flex; 
+    flex-direction: column;
+    border-radius: 5px; 
+    box-shadow: 0px 4px 5px 0px rgba(0, 0, 0, 0.15);  
+    font-size: 16px; 
+`
+const Total = styled.div` 
+    height: 1000px;
+    display: flex; 
+    justify-content: space-between;
+    align-items: flex-end;
+
+    a { 
+        font-weight: 700;
+    } 
+
+    span { 
+        color: ${props => props.sum > 0 ? "rgba(3, 172, 0, 1)" : "rgba(199, 0, 0, 1)"};
+    }
+`
 const OptionBoxes = styled.div`
     width: 100%; 
     height: 100%; 
