@@ -5,9 +5,22 @@ import { useNavigate } from "react-router-dom";
 import RenderizeActions from "./RenderizeActions";
 
 export default function Main({userData}) {  
-    const [actions, setActions] = useState();
+    const [actions, setActions] = useState([]);
     const [sum, setSum] = useState(0);
     const navigate = useNavigate(); 
+
+    function sumAll() { 
+        let soma = 0;
+        console.log(actions.length);
+        for(let i=0; i<actions.length; i++) { 
+            if(actions[i].type === "entrada") { 
+                soma += actions[i].value;
+            } else { 
+                soma -= actions[i].value;
+            }
+        } 
+        setSum(soma);
+   } 
     
     useEffect(() => {
         const config = { 
@@ -26,21 +39,10 @@ export default function Main({userData}) {
             alert("ERRO AO CARREGAR");
             navigate("/");
         });
-    }, []);  
+    }, []);   
 
-   function sumAll() { 
-        let soma = 0;
-        for(let i=0; i<actions.length; i++) { 
-            if(actions[i].type === "entrada") { 
-                soma = actions[i].value;
-            } else { 
-                soma -= actions[i].value;
-            }
-        } 
-        setSum(soma);
-   } 
-
-   console.log(sum);
+    console.log(actions.length);
+    console.log(sum);
 
     return( 
         <Container>
@@ -61,7 +63,7 @@ export default function Main({userData}) {
                 )}
                     <Total sum={sum}>
                         <a>SALDO</a>
-                        <span>{sum}</span>
+                        <span>{sum.toFixed(2)}</span>
                     </Total>
                 </Records> ) : (
                 <WhiteNote> 
