@@ -53,7 +53,7 @@ export default function Main({userData}) {
                 <ion-icon name="exit-outline" onClick={() => navigate("/")}></ion-icon>
             </Header>  
 
-            {actions ? (
+            {actions.length != 0 ? (
                 <Records> 
                 {actions.map(action => 
                     <RenderizeActions 
