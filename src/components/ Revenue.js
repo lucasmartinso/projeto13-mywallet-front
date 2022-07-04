@@ -18,7 +18,7 @@ export default function Revenue({userData}) {
         const config = {
             headers: {Authorization: `Bearer ${userData.token}`}
         };  
-        const promise = axios.post("http://localhost:4000/revenue",info,config); 
+        const promise = axios.post("https://projeto13-mywallet-back-lucas.herokuapp.com/revenue",info,config); 
 
         promise.then(response => { 
             console.log(response.data); 

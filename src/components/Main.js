@@ -27,7 +27,7 @@ export default function Main({userData}) {
             headers: {Authorization : `Bearer ${userData.token}`}
         }; 
         
-        const promise = axios.get("http://localhost:4000/records",config);
+        const promise = axios.get("https://projeto13-mywallet-back-lucas.herokuapp.com/records",config);
 
         promise.then(response => { 
             setActions(response.data);

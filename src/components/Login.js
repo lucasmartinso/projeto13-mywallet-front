@@ -18,7 +18,7 @@ export default function Login({setUserData}) {
 
         setClicked(true);
         const info = {email,password}; 
-        const promise = axios.post("http://localhost:4000/login",info); 
+        const promise = axios.post("https://projeto13-mywallet-back-lucas.herokuapp.com/login",info); 
 
         promise.then(response => { 
             setUserData(response.data); 

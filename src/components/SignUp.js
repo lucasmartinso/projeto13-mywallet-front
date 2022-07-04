@@ -19,7 +19,7 @@ export default function SignUp () {
 
         setClicked(true); 
         const info = {name,email, password, confirmPassword}; 
-        const promise = axios.post("http://localhost:4000/registration",info);
+        const promise = axios.post("https://projeto13-mywallet-back-lucas.herokuapp.com/registration",info);
 
         promise.then(response => { 
             console.log(response.data); 
