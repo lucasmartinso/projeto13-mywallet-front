@@ -31,7 +31,6 @@ export default function Main({userData}) {
 
         promise.then(response => { 
             setActions(response.data);
-            sumAll();
         });  
 
         promise.catch(error => { 
@@ -43,6 +42,9 @@ export default function Main({userData}) {
 
     console.log(actions.length);
     console.log(sum);
+    setTimeout(() => { 
+        sumAll();
+    },1000)
 
     return( 
         <Container>
